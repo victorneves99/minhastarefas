@@ -2,10 +2,26 @@ package br.com.victor.minhastarefas.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "tarefas")
 public class Tarefa {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
+    @Column(name = "descricao",nullable = false,length = 150)
     private String descricao;
+    @Enumerated(EnumType.STRING)
     private TarefasStatus status;
     private LocalDate dataEntrega;
     private boolean visivel;
@@ -61,4 +77,13 @@ public class Tarefa {
         this.visivel = visivel;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    
 }
