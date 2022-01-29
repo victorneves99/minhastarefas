@@ -9,6 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -25,8 +27,12 @@ public class Tarefa {
     private TarefasStatus status;
     private LocalDate dataEntrega;
     private boolean visivel;
+
+    @ManyToOne
     private Usuario usuario;
 
+    @ManyToOne
+    @JoinColumn(nullable = false)
     private TarefaCategoria categoria;
 
     public String getDescricao() {
