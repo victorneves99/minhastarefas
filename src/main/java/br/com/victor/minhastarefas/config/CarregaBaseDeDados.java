@@ -3,7 +3,6 @@ package br.com.victor.minhastarefas.config;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,13 +28,16 @@ public class CarregaBaseDeDados {
     private TarefaRepository tarefaRepository;
 
     @Bean
-    CommandLineRunner executar() {
+    CommandLineRunner executar(){
+
+
 
         return args -> {
             Usuario usuario = new Usuario();
             usuario.setNome("Victor");
             usuario.setSenha("123456");
             usuarioRepository.save(usuario);
+
 
             TarefaCategoria categoria = new TarefaCategoria();
             categoria.setNome("Estudos");
