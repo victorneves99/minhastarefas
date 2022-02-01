@@ -48,8 +48,18 @@ public class TarefaService {
             throw new TarefaStatusException();
         }
 
-
         tarefa.setStatus(TarefaStatus.EM_ANDAMENTO);
+        return repository.save(tarefa);
+    }
+
+    public Tarefa concluirTarefaPorId(Integer id) {
+        Tarefa tarefa = getTarefaPorId(id);
+
+        if (TarefaStatus.CANCELADA.equals(tarefa.getStatus())) {
+        throw new TarefaStatusException();
+        }
+
+        tarefa.setStatus(TarefaStatus.CONCLUIDA);
         return repository.save(tarefa);
     }
 }
