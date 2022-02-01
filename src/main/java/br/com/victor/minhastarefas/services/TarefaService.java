@@ -1,14 +1,15 @@
 package br.com.victor.minhastarefas.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.victor.minhastarefas.exception.TarefaStatusException;
 import br.com.victor.minhastarefas.model.Tarefa;
+import br.com.victor.minhastarefas.model.TarefaStatus;
 import br.com.victor.minhastarefas.repository.TarefaRepository;
 
 @Service
@@ -40,4 +41,15 @@ public class TarefaService {
         repository.deleteById(id);
     }
 
+    public Tarefa iniciarTarefaPorId(Integer id) {
+        Tarefa tarefa = getTarefaPorId(id);
+
+        if (!TarefaStatus.ABERTO.equals(tarefa.getStatus())) {
+            throw new TarefaStatusException();
+        }
+
+
+        tarefa.setStatus(TarefaStatus.EM_ANDAMENTO);
+        return repository.save(tarefa);
+    }
 }

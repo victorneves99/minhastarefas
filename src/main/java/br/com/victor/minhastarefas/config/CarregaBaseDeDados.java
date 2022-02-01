@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Profile;
 
 import br.com.victor.minhastarefas.model.Tarefa;
 import br.com.victor.minhastarefas.model.TarefaCategoria;
-import br.com.victor.minhastarefas.model.TarefasStatus;
+import br.com.victor.minhastarefas.model.TarefaStatus;
 import br.com.victor.minhastarefas.model.Usuario;
 import br.com.victor.minhastarefas.repository.TarefaCategoriaRepository;
 import br.com.victor.minhastarefas.repository.TarefaRepository;
@@ -46,7 +46,7 @@ public class CarregaBaseDeDados {
             Tarefa tarefa = new Tarefa();
             tarefa.setDescricao("Aprender Spring Boot");
             tarefa.setDataEntrega(LocalDate.now().plusDays(1));
-            tarefa.setStatus(TarefasStatus.ABERTO);
+            tarefa.setStatus(TarefaStatus.ABERTO);
             tarefa.setVisivel(true);
             tarefa.setCategoria(categoria);
             tarefa.setUsuario(usuario);

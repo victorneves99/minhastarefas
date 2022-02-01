@@ -31,7 +31,7 @@ public class Tarefa {
     @Column(name = "descricao",nullable = false,length = 150)
     private String descricao;
     @Enumerated(EnumType.STRING)
-    private TarefasStatus status;
+    private TarefaStatus status = TarefaStatus.ABERTO;
     @FutureOrPresent(message = "{tarefa.descricao.future-or-present}")
     private LocalDate dataEntrega;
     private boolean visivel;
@@ -67,11 +67,11 @@ public class Tarefa {
         this.descricao = descricao;
     }
 
-    public TarefasStatus getStatus() {
+    public TarefaStatus getStatus() {
         return status;
     }
 
-    public void setStatus(TarefasStatus status) {
+    public void setStatus(TarefaStatus status) {
         this.status = status;
     }
 
