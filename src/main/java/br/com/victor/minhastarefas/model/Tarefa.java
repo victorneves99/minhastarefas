@@ -13,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "tarefas")
@@ -23,10 +26,13 @@ public class Tarefa {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @NotBlank(message = "{tarefa.descricao.not-blank}")
+    @Size(min = 5,max = 150,message = "{tarefa.descricao.size}")
     @Column(name = "descricao",nullable = false,length = 150)
     private String descricao;
     @Enumerated(EnumType.STRING)
     private TarefasStatus status;
+    @FutureOrPresent(message = "{tarefa.descricao.future-or-present}")
     private LocalDate dataEntrega;
     private boolean visivel;
 
