@@ -1,4 +1,4 @@
-package br.com.victor.minhastarefas.response;
+package br.com.victor.minhastarefas.controller.response;
 
 import java.time.LocalDate;
 
