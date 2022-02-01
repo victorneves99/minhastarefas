@@ -1,10 +1,13 @@
 package br.com.victor.minhastarefas.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.victor.minhastarefas.model.Tarefa;
+import br.com.victor.minhastarefas.response.TarefaResponse;
 import br.com.victor.minhastarefas.services.TarefaService;
 
 @RestController
@@ -25,26 +29,42 @@ public class TarefaController {
     @Autowired
     private TarefaService service;
 
+    @Autowired
+    private ModelMapper mapper;
+
     @GetMapping("/tarefa")
-    public List<Tarefa> todasTarefas(@RequestParam Map<String, String> parametros) {
+    public List<TarefaResponse> todasTarefas(@RequestParam Map<String, String> parametros) {
+
+        List<Tarefa> tarefas = new ArrayList<>();
+
         if (parametros.isEmpty()) {
-            return service.getTodasTarefas();
+            tarefas = service.getTodasTarefas();
+        } else {
+            String descricao = parametros.get("descricao");
+            tarefas = service.getTarefasPorDescricao(descricao);
         }
 
-        String descricao = parametros.get("descricao");
-        return service.getTarefasPorDescricao(descricao);
+        List<TarefaResponse> tarefaResponses = tarefas.stream().map(tarefa -> mapper.map(tarefa, TarefaResponse.class))
+                .collect(Collectors.toList());
+
+        return tarefaResponses;
 
     }
 
     @GetMapping("/tarefa/{id}")
-    public Tarefa umaTarefa(@PathVariable Integer id) {
-        return service.getTarefaPorId(id);
+    public TarefaResponse umaTarefa(@PathVariable Integer id) {
+
+        Tarefa tarefa = service.getTarefaPorId(id);
+
+        TarefaResponse tarefaResponse = mapper.map(tarefa, TarefaResponse.class);
+
+        return tarefaResponse;
     }
 
     @PostMapping("/tarefa")
-    public Tarefa salvarTarefa(@RequestBody @Valid Tarefa tarefa) {
+    public TarefaResponse salvarTarefa(@RequestBody @Valid Tarefa tarefa) {
 
-        return service.salvarTarefa(tarefa);
+        return mapper.map(service.salvarTarefa(tarefa), TarefaResponse.class);
     }
 
     @DeleteMapping("/tarefa/{id}")
