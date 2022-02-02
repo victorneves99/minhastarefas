@@ -1,6 +1,9 @@
 package br.com.victor.minhastarefas.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,6 +12,8 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,8 +29,13 @@ import br.com.victor.minhastarefas.model.Tarefa;
 import br.com.victor.minhastarefas.services.TarefaService;
 
 @RestController
-@RequestMapping
+@RequestMapping("/tarefa")
 public class TarefaController {
+
+    /**
+     *
+     */
+    private static final TarefaController METHOD_ON = WebMvcLinkBuilder.methodOn(TarefaController.class);
 
     @Autowired
     private TarefaService service;
@@ -33,7 +43,7 @@ public class TarefaController {
     @Autowired
     private ModelMapper mapper;
 
-    @GetMapping("/tarefa")
+    @GetMapping
     public List<TarefaResponse> todasTarefas(@RequestParam Map<String, String> parametros) {
 
         List<Tarefa> tarefas = new ArrayList<>();
@@ -52,17 +62,21 @@ public class TarefaController {
 
     }
 
-    @GetMapping("/tarefa/{id}")
-    public TarefaResponse umaTarefa(@PathVariable Integer id) {
+    @GetMapping("/{id}")
+    public EntityModel<TarefaResponse> umaTarefa(@PathVariable Integer id) {
 
         Tarefa tarefa = service.getTarefaPorId(id);
 
         TarefaResponse tarefaResponse = mapper.map(tarefa, TarefaResponse.class);
 
-        return tarefaResponse;
+        EntityModel<TarefaResponse> tarefaModel = EntityModel.of(tarefaResponse,
+                linkTo(METHOD_ON.umaTarefa(id)).withSelfRel(),
+                linkTo(METHOD_ON.todasTarefas(new HashMap<>())).withRel("tarefas"));
+
+        return tarefaModel;
     }
 
-    @PostMapping("/tarefa")
+    @PostMapping
     public TarefaResponse salvarTarefa(@RequestBody @Valid TarefaRequest tarefaRequest) {
 
         Tarefa tarefa = mapper.map(tarefaRequest, Tarefa.class);
@@ -70,7 +84,7 @@ public class TarefaController {
         return tarefaReq;
     }
 
-    @DeleteMapping("/tarefa/{id}")
+    @DeleteMapping("/{id}")
     public void escluirTarefa(@PathVariable Integer id) {
 
         service.deleteById(id);
