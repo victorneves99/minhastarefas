@@ -23,7 +23,7 @@ import br.com.victor.minhastarefas.services.TarefaCategoriaService;
 
 @RestController
 @RequestMapping("/categoria")
-public class TarefaCateforiaController {
+public class TarefaCategoriaController {
 
     @Autowired
     private TarefaCategoriaService service;
