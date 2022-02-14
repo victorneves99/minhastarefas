@@ -16,29 +16,53 @@ import br.com.victor.minhastarefas.controller.TarefaController;
 import br.com.victor.minhastarefas.controller.UsuarioController;
 import br.com.victor.minhastarefas.controller.response.TarefaResponse;
 import br.com.victor.minhastarefas.model.Tarefa;
+import br.com.victor.minhastarefas.model.TarefaStatus;
 
 @Component
 public class TarefaModelAssembler implements RepresentationModelAssembler<Tarefa, EntityModel<TarefaResponse>> {
 
-    @Autowired
-    private ModelMapper mapper;
+        @Autowired
+        private ModelMapper mapper;
 
-    @Override
-    public EntityModel<TarefaResponse> toModel(Tarefa tarefa) {
+        @Override
+        public EntityModel<TarefaResponse> toModel(Tarefa tarefa) {
 
-        TarefaResponse tarefaResponse = mapper.map(tarefa, TarefaResponse.class);
+                TarefaResponse tarefaResponse = mapper.map(tarefa, TarefaResponse.class);
 
-        EntityModel<TarefaResponse> tarefaModel = EntityModel.of(tarefaResponse,
-                linkTo(methodOn(TarefaController.class).umaTarefa(tarefaResponse.getId()))
-                        .withSelfRel(),
-                linkTo(methodOn(TarefaController.class).todasTarefas(new HashMap<>()))
-                        .withRel("tarefas"),
-                linkTo(methodOn(TarefaCategoriaController.class).umaCategoria(tarefaResponse.getCategoriaId()))
-                        .withRel("categoria"),
-                linkTo(methodOn(UsuarioController.class).getUsuarioPorId(tarefaResponse.getUsuarioId()))
-                        .withRel("usuario"));
+                EntityModel<TarefaResponse> tarefaModel = EntityModel.of(tarefaResponse,
+                                linkTo(methodOn(TarefaController.class).umaTarefa(tarefaResponse.getId()))
+                                                .withSelfRel(),
+                                linkTo(methodOn(TarefaController.class).todasTarefas(new HashMap<>()))
+                                                .withRel("tarefas"),
+                                linkTo(methodOn(TarefaCategoriaController.class)
+                                                .umaCategoria(tarefaResponse.getCategoriaId()))
+                                                                .withRel("categoria"),
+                                linkTo(methodOn(UsuarioController.class).getUsuarioPorId(tarefaResponse.getUsuarioId()))
+                                                .withRel("usuario"));
 
-        return tarefaModel;
-    }
+                if (TarefaStatus.EM_ANDAMENTO.equals(tarefa.getStatus())) {
+
+                        tarefaModel.add(
+                                        linkTo(methodOn(TarefaController.class).concluirTarefa(tarefa.getId()))
+                                                        .withRel("concluir"),
+                                        linkTo(methodOn(TarefaController.class).cancelarTarefa(tarefa.getId()))
+                                                        .withRel("cancelar")
+
+                        );
+
+                }
+
+                if (TarefaStatus.ABERTO.equals(tarefa.getStatus())) {
+
+                        tarefaModel.add(
+                                        linkTo(methodOn(TarefaController.class).iniciarTarefa(tarefa.getId()))
+                                                        .withRel("iniciar")
+
+                        );
+
+                }
+
+                return tarefaModel;
+        }
 
 }
