@@ -44,7 +44,6 @@ public class TarefaController {
     @Autowired
     private TarefaModelAssembler assembler;
 
-    private Tarefa salvarTarefa;
 
     @GetMapping
     public CollectionModel<EntityModel<TarefaResponse>> todasTarefas(@RequestParam Map<String, String> parametros) {
