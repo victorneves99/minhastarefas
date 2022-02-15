@@ -10,6 +10,11 @@ public class ErrorResponse {
         this.campo = campo;
         this.mensagem = mensagem;
     }
+    public ErrorResponse(String mensagem) {
+        super();
+       
+        this.mensagem = mensagem;
+    }
 
     public String getCampo() {
         return campo;
