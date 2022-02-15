@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "roles")
 public class Role {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -20,6 +20,13 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private ERole name;
+
+    public Role() {
+    }
+
+    public Role(ERole name) {
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;
@@ -37,5 +44,4 @@ public class Role {
         this.name = name;
     }
 
-    
 }
