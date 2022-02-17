@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import br.com.victor.minhastarefas.services.UserDetailsServiceImpl;
 
@@ -23,7 +24,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] PATHS = new String[] { "/tarefa/**", "/categoria/**", "/usuario/**" };
 
-
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
@@ -32,6 +32,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         return new BCryptPasswordEncoder();
 
+    }
+
+    @Bean
+    public AuthTokenFilter authenticationJwTokenFilter() {
+        return new AuthTokenFilter();
     }
 
     @Bean
@@ -70,7 +75,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .httpBasic();
+                .addFilterBefore(authenticationJwTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }
 

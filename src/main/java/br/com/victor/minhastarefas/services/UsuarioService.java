@@ -8,13 +8,21 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.victor.minhastarefas.controller.response.JwtResponse;
 import br.com.victor.minhastarefas.model.Role;
 import br.com.victor.minhastarefas.model.Usuario;
 import br.com.victor.minhastarefas.repository.RoleRepository;
 import br.com.victor.minhastarefas.repository.UsuarioRepository;
+import br.com.victor.minhastarefas.security.JwtUtils;
+import br.com.victor.minhastarefas.security.UserDetailsImpl;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 public class UsuarioService {
@@ -24,6 +32,12 @@ public class UsuarioService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    public AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @Autowired
     private UsuarioRepository repository;
@@ -53,8 +67,7 @@ public class UsuarioService {
         repository.deleteById(id);
     }
 
-
-    public Usuario atualizar(Integer id,Usuario usuario){
+    public Usuario atualizar(Integer id, Usuario usuario) {
 
         Optional<Usuario> usuarioBanco = repository.findById(id);
 
@@ -67,8 +80,6 @@ public class UsuarioService {
         return criarUsuario(usuario);
     }
 
-
-
     private Set<Role> getRoles(Usuario usuario) {
         Set<Role> rolesBanco = usuario.getRoles()
                 .stream()
@@ -76,6 +87,22 @@ public class UsuarioService {
                 .collect(Collectors.toSet());
 
         return rolesBanco;
+    }
+
+    public JwtResponse autenticaUsuario(String nome, String senha) {
+
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(nome, senha));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = jwtUtils.genereteJwtToken(authentication);
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        List<String>   roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
+
+        return new JwtResponse(jwt, userDetails.getId(),userDetails.getUsername(),roles);
     }
 
 }

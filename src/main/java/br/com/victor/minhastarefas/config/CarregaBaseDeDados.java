@@ -45,6 +45,7 @@ public class CarregaBaseDeDados {
 
             Role roleAdmin = new Role(ERole.ROLE_ADMIN);
             roleAdmin = roleRepository.save(roleAdmin);
+           
 
 
             Usuario usuario = new Usuario();
@@ -52,6 +53,7 @@ public class CarregaBaseDeDados {
             usuario.setSenha(encoder.encode("123456"));
             usuario.setRoles(Set.of(roleAdmin));
             usuarioRepository.save(usuario);
+            
 
 
             TarefaCategoria categoria = new TarefaCategoria();
