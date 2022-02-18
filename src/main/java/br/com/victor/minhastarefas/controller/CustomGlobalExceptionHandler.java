@@ -1,5 +1,6 @@
 package br.com.victor.minhastarefas.controller;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,10 +11,12 @@ import org.springframework.hateoas.mediatype.problem.Problem;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -53,5 +56,19 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return ResponseEntity.badRequest().body(errors);
 
     }
+
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    ErrorResponse entityBadCredentialsException(BadCredentialsException ex){
+        return new ErrorResponse("Nome de Usuario e/ou senha invalidos");
+    }
+
+    // @ExceptionHandler(Unauthorized.class)
+    // @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    // ErrorResponse unauthorized(UncaughtExceptionHandler ex){
+    //     return new ErrorResponse("Usuario não autorizado");
+    // }
+
 
 }
